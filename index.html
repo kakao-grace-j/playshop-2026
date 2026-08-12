@@ -1,0 +1,977 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>2026 플레이샵 · 아난티 앳 부산</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f7f5f0;
+    --bg-2: #efece4;
+    --ink: #1a1f2b;
+    --ink-2: #55606f;
+    --muted: #8b95a4;
+    --line: #e4dfd3;
+    --card: #ffffff;
+    --sea: #2d6b7a;
+    --sea-2: #468a99;
+    --sand: #d9c8a8;
+    --coral: #d97757;
+    --sun: #e6a94b;
+    --ok: #4a8b6f;
+    --shadow: 0 1px 2px rgba(20,30,50,.04), 0 8px 24px rgba(20,30,50,.06);
+    --radius: 14px;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 1280px; margin: 0 auto; padding: 24px 20px 96px; }
+
+  /* Layout: main + right rail */
+  .layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 300px;
+    gap: 32px;
+    align-items: start;
+  }
+  .main { min-width: 0; }
+  @media (max-width: 980px) {
+    .layout { grid-template-columns: 1fr; }
+    .rail { position: static !important; }
+  }
+
+  /* Top identity bar */
+  .id-bar {
+    display: flex; align-items: center; gap: 12px;
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 10px 14px;
+    margin-bottom: 20px;
+    box-shadow: var(--shadow);
+    flex-wrap: wrap;
+  }
+  .id-bar label {
+    font-size: 12px; font-weight: 700; color: var(--ink-2);
+    letter-spacing: .04em;
+  }
+  .id-bar input {
+    flex: 1; min-width: 160px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-size: 14px;
+    font-family: inherit;
+    color: var(--ink);
+    outline: none;
+    transition: border-color .15s ease;
+  }
+  .id-bar input:focus { border-color: var(--sea); }
+  .id-bar .id-status {
+    font-size: 12px; font-weight: 600;
+    padding: 4px 10px; border-radius: 999px;
+    background: var(--bg-2); color: var(--muted);
+  }
+  .id-bar .id-status.ok { background: rgba(74,139,111,.15); color: var(--ok); }
+  .id-bar .sync-dot {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 12px; font-weight: 600;
+    padding: 4px 10px; border-radius: 999px;
+    background: var(--bg-2); color: var(--muted);
+  }
+  .id-bar .sync-dot::before {
+    content: ''; width: 8px; height: 8px; border-radius: 50%;
+    background: var(--muted);
+    box-shadow: 0 0 0 0 currentColor;
+  }
+  .id-bar .sync-dot.connected { background: rgba(74,139,111,.15); color: var(--ok); }
+  .id-bar .sync-dot.connected::before {
+    background: var(--ok);
+    animation: pulse 2s infinite;
+  }
+  .id-bar .sync-dot.error { background: rgba(217,119,87,.15); color: var(--coral); }
+  .id-bar .sync-dot.error::before { background: var(--coral); }
+  @keyframes pulse {
+    0%   { box-shadow: 0 0 0 0 rgba(74,139,111,.5); }
+    70%  { box-shadow: 0 0 0 6px rgba(74,139,111,0); }
+    100% { box-shadow: 0 0 0 0 rgba(74,139,111,0); }
+  }
+
+  /* Right rail — participants */
+  .rail {
+    position: sticky;
+    top: 20px;
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 20px;
+    box-shadow: var(--shadow);
+    max-height: calc(100vh - 40px);
+    overflow-y: auto;
+  }
+  .rail h3 {
+    display: flex; align-items: center; justify-content: space-between;
+    margin: 0 0 12px;
+    font-size: 15px;
+  }
+  .rail h3 .count {
+    font-size: 11px; font-weight: 700;
+    padding: 3px 8px; border-radius: 999px;
+    background: var(--bg-2); color: var(--muted);
+    letter-spacing: .04em;
+  }
+  .rail .rail-group { margin-bottom: 18px; }
+  .rail .rail-group:last-child { margin-bottom: 0; }
+  .rail .rg-title {
+    font-size: 11px; font-weight: 700; letter-spacing: .08em;
+    color: var(--muted); text-transform: uppercase;
+    margin-bottom: 8px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--line);
+  }
+  .rail .rg-item {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 6px 0;
+    font-size: 13px;
+  }
+  .rail .rg-item .who {
+    display: flex; align-items: center; gap: 8px;
+    font-weight: 600; color: var(--ink);
+    min-width: 0;
+  }
+  .rail .rg-item .avatar {
+    width: 22px; height: 22px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--sea), var(--sea-2));
+    color: #fff; font-size: 11px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .rail .rg-item .choice {
+    font-size: 12px; color: var(--ink-2); font-weight: 500;
+    text-align: right;
+    padding-left: 8px;
+  }
+  .rail .rg-empty {
+    font-size: 12px; color: var(--muted);
+    font-style: italic;
+    text-align: center;
+    padding: 8px 0;
+  }
+  .rail-note {
+    font-size: 11px; color: var(--muted);
+    padding-top: 12px;
+    border-top: 1px dashed var(--line);
+    line-height: 1.5;
+  }
+
+  /* Hero */
+  .hero {
+    position: relative;
+    border-radius: 20px;
+    overflow: hidden;
+    padding: 56px 40px 44px;
+    background:
+      radial-gradient(120% 100% at 100% 0%, rgba(70,138,153,.35) 0%, transparent 55%),
+      radial-gradient(90% 90% at 0% 100%, rgba(217,119,87,.25) 0%, transparent 55%),
+      linear-gradient(135deg, #eef4f2 0%, #f6efe4 100%);
+    box-shadow: var(--shadow);
+    margin-bottom: 40px;
+  }
+  .hero .eyebrow {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-size: 13px; font-weight: 600; color: var(--sea);
+    background: rgba(45,107,122,.08);
+    padding: 6px 12px; border-radius: 999px;
+    letter-spacing: .02em;
+  }
+  .hero h1 {
+    font-size: clamp(30px, 5vw, 44px);
+    font-weight: 800;
+    letter-spacing: -.02em;
+    margin: 18px 0 8px;
+    line-height: 1.15;
+  }
+  .hero .sub {
+    color: var(--ink-2);
+    font-size: 16px;
+    margin: 0 0 28px;
+  }
+  .hero-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0,1fr));
+    gap: 16px;
+  }
+  .hero-cell {
+    background: rgba(255,255,255,.65);
+    backdrop-filter: blur(6px);
+    padding: 16px 18px;
+    border-radius: 12px;
+    border: 1px solid rgba(255,255,255,.9);
+  }
+  .hero-cell .k { font-size: 12px; color: var(--muted); font-weight: 600; letter-spacing: .04em; text-transform: uppercase; margin-bottom: 4px; }
+  .hero-cell .v { font-size: 15px; font-weight: 600; color: var(--ink); }
+  .hero-cell .v small { color: var(--ink-2); font-weight: 500; }
+
+  /* Section headers */
+  section { margin: 40px 0; }
+  h2 {
+    font-size: 22px;
+    font-weight: 700;
+    margin: 0 0 16px;
+    letter-spacing: -.01em;
+    display: flex; align-items: center; gap: 10px;
+  }
+  h2 .badge {
+    font-size: 11px; font-weight: 700;
+    color: var(--sea);
+    background: rgba(45,107,122,.1);
+    padding: 3px 8px; border-radius: 6px;
+    letter-spacing: .04em;
+  }
+  h3 { font-size: 16px; font-weight: 700; margin: 0 0 6px; }
+
+  /* Cards */
+  .card {
+    background: var(--card);
+    border-radius: var(--radius);
+    padding: 24px;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--line);
+  }
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  @media (max-width: 720px) {
+    .grid-2, .grid-3 { grid-template-columns: 1fr; }
+    .hero-grid { grid-template-columns: 1fr; }
+    .hero { padding: 40px 24px 32px; }
+    .wrap { padding: 20px 16px 64px; }
+  }
+
+  /* Timeline (Day 1) */
+  .timeline {
+    position: relative;
+    padding-left: 28px;
+  }
+  .timeline::before {
+    content: '';
+    position: absolute; left: 8px; top: 8px; bottom: 8px;
+    width: 2px; background: linear-gradient(180deg, var(--sea-2), var(--sand));
+    border-radius: 2px;
+  }
+  .tl-item { position: relative; padding: 10px 0 22px; }
+  .tl-item::before {
+    content: '';
+    position: absolute; left: -25px; top: 16px;
+    width: 12px; height: 12px; border-radius: 50%;
+    background: var(--sea); border: 3px solid var(--bg);
+    box-shadow: 0 0 0 1px var(--sea);
+  }
+  .tl-time { font-size: 12px; color: var(--muted); font-weight: 600; letter-spacing: .04em; text-transform: uppercase; }
+  .tl-title { font-size: 17px; font-weight: 700; margin: 2px 0 6px; }
+  .tl-desc { color: var(--ink-2); font-size: 14px; }
+
+  /* Vote block */
+  .vote {
+    border: 1px dashed var(--coral);
+    background: linear-gradient(180deg, #fffaf5 0%, #ffffff 100%);
+    border-radius: var(--radius);
+    padding: 20px 22px;
+    margin: 14px 0;
+  }
+  .vote-head {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 12px; margin-bottom: 4px;
+  }
+  .vote-title { font-size: 15px; font-weight: 700; color: var(--coral); display: flex; align-items: center; gap: 8px; }
+  .vote-title::before { content: '🗳️'; }
+  .vote-status {
+    font-size: 11px; font-weight: 700; letter-spacing: .06em;
+    padding: 4px 8px; border-radius: 999px;
+    background: rgba(230,169,75,.15); color: #a26b1c;
+  }
+  .vote-status.closed { background: rgba(74,139,111,.15); color: var(--ok); }
+  .vote-desc { font-size: 13px; color: var(--ink-2); margin: 4px 0 14px; }
+  .options { display: grid; gap: 8px; }
+  .opt {
+    display: flex; align-items: center; gap: 12px;
+    padding: 12px 14px;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    background: #fff;
+    cursor: pointer;
+    transition: all .15s ease;
+  }
+  .opt:hover { border-color: var(--sea-2); background: #f7fbfc; }
+  .opt input { appearance: none; width: 18px; height: 18px; border: 2px solid var(--muted); border-radius: 50%; margin: 0; flex-shrink: 0; position: relative; cursor: pointer; }
+  .opt input[type="checkbox"] { border-radius: 5px; }
+  .opt input:checked { border-color: var(--sea); background: var(--sea); }
+  .opt input:checked::after {
+    content: ''; position: absolute; inset: 3px;
+    background: #fff; border-radius: 50%;
+  }
+  .opt input[type="checkbox"]:checked::after {
+    content: '✓'; color: #fff; font-size: 12px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center; inset: 0; background: transparent;
+  }
+  .opt .lbl { flex: 1; font-size: 14px; font-weight: 500; }
+  .opt .lbl .hint { display: block; color: var(--muted); font-size: 12px; font-weight: 400; margin-top: 2px; }
+  .opt.selected { border-color: var(--sea); background: #eef7f8; }
+
+  /* Skip card — distinct style */
+  .opt.opt-skip {
+    border-style: dashed;
+    border-color: var(--sand);
+    background: #fdfaf3;
+  }
+  .opt.opt-skip:hover { border-color: var(--sun); background: #fdf5e6; }
+  .opt.opt-skip.selected { border-color: var(--sun); background: #fdf1dc; }
+  .opt.opt-skip .lbl { color: #7a5a1e; }
+  .opt.opt-skip .lbl .hint { color: #a87a2a; }
+
+  /* Section divider inside vote (course vs skip) */
+  .opt-divider {
+    display: flex; align-items: center; gap: 10px;
+    margin: 6px 2px;
+    font-size: 11px; font-weight: 700; letter-spacing: .08em;
+    color: var(--muted); text-transform: uppercase;
+  }
+  .opt-divider::before, .opt-divider::after {
+    content: ''; flex: 1; height: 1px; background: var(--line);
+  }
+
+  /* Amenities */
+  .amenity {
+    display: flex; align-items: flex-start; gap: 12px;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .amenity:last-child { border-bottom: none; }
+  .amenity .ico {
+    width: 40px; height: 40px; flex-shrink: 0;
+    border-radius: 10px;
+    background: linear-gradient(135deg, rgba(45,107,122,.1), rgba(217,119,87,.08));
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px;
+  }
+  .amenity h4 { margin: 0 0 2px; font-size: 14px; font-weight: 700; }
+  .amenity h4 a {
+    color: inherit; text-decoration: none;
+    display: inline-flex; align-items: center; gap: 4px;
+    transition: color .15s ease;
+  }
+  .amenity h4 a::after {
+    content: '↗';
+    font-size: 11px; font-weight: 500;
+    color: var(--muted);
+    transition: transform .15s ease, color .15s ease;
+  }
+  .amenity h4 a:hover { color: var(--sea); }
+  .amenity h4 a:hover::after { color: var(--sea); transform: translate(1px,-1px); }
+  .amenity p { margin: 0; font-size: 13px; color: var(--ink-2); }
+  .tag-paid {
+    display: inline-block;
+    margin-left: 4px;
+    font-size: 10px; font-weight: 700;
+    padding: 2px 6px; border-radius: 4px;
+    background: rgba(217,119,87,.15); color: var(--coral);
+    letter-spacing: .04em;
+    vertical-align: middle;
+  }
+
+  /* Map embed */
+  .map-card {
+    background: var(--card);
+    border-radius: var(--radius);
+    overflow: hidden;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--line);
+  }
+  .map-head {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 12px;
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--line);
+    background: linear-gradient(180deg, #ffffff 0%, #fafaf5 100%);
+  }
+  .map-head .title { font-size: 14px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+  .map-head a {
+    font-size: 12px; font-weight: 600;
+    color: var(--sea); text-decoration: none;
+    display: inline-flex; align-items: center; gap: 4px;
+  }
+  .map-head a:hover { text-decoration: underline; }
+  .map-frame {
+    width: 100%;
+    height: 420px;
+    border: 0;
+    display: block;
+  }
+  @media (max-width: 720px) { .map-frame { height: 320px; } }
+
+  /* Info banner */
+  .info {
+    background: rgba(45,107,122,.06);
+    border-left: 3px solid var(--sea);
+    padding: 12px 16px;
+    border-radius: 8px;
+    font-size: 13px;
+    color: var(--ink-2);
+    margin: 12px 0;
+  }
+
+  /* Footer */
+  footer {
+    margin-top: 60px;
+    padding-top: 24px;
+    border-top: 1px solid var(--line);
+    color: var(--muted);
+    font-size: 12px;
+    text-align: center;
+  }
+
+  /* Pill list */
+  .pills { display: flex; flex-wrap: wrap; gap: 6px; }
+  .pill {
+    font-size: 12px; font-weight: 600;
+    padding: 4px 10px; border-radius: 999px;
+    background: var(--bg-2); color: var(--ink-2);
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- Identity bar -->
+  <div class="id-bar">
+    <label for="ldap">👤 내 LDAP</label>
+    <input id="ldap" type="text" placeholder="예: grace.j" autocomplete="off" spellcheck="false" />
+    <span class="id-status" id="idStatus">미입력</span>
+    <span class="sync-dot" id="syncDot">연결 중…</span>
+  </div>
+
+  <div class="layout">
+  <div class="main">
+
+  <!-- HERO -->
+  <div class="hero">
+    <span class="eyebrow">📍 2026 PLAYSHOP · DRAFT</span>
+    <h1>부산에서 보내는 1박 2일<br/>아난티 앳 부산 빌라쥬</h1>
+    <p class="sub">일정은 초안 기준이며, 세부 항목은 아래 투표로 함께 확정합니다.</p>
+
+    <div class="hero-grid">
+      <div class="hero-cell">
+        <div class="k">📅 일정</div>
+        <div class="v">2026.09.30 (수)<br/><small>~ 10.01 (목) · 1박 2일</small></div>
+      </div>
+      <div class="hero-cell">
+        <div class="k">🏨 숙소</div>
+        <div class="v">아난티 앳 부산 빌라쥬<br/><small>2인 1실 또는 3인 1실</small></div>
+      </div>
+      <div class="hero-cell">
+        <div class="k">🚄 이동</div>
+        <div class="v">KTX<br/><small>부산역 집결 → 단체 택시</small></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Map -->
+  <section>
+    <h2>🗺️ 아난티 앳 부산 지도</h2>
+    <div class="map-card">
+      <div class="map-head">
+        <div class="title">🗺️ 빌라쥬 · 부대시설 위치</div>
+        <a href="https://ananti.kr/ko/busan/journey/map" target="_blank" rel="noopener">전체 지도 열기 ↗</a>
+      </div>
+      <iframe
+        class="map-frame"
+        src="https://ananti.kr/ko/busan/journey/map"
+        title="아난티 앳 부산 지도"
+        loading="lazy"
+        referrerpolicy="no-referrer-when-downgrade"
+      ></iframe>
+    </div>
+  </section>
+
+  <!-- Voting board summary -->
+  <section>
+    <h2>🗳️ 지금 필요한 결정 <span class="badge">VOTE</span></h2>
+    <div class="card">
+      <p style="margin:0 0 4px; color: var(--ink-2); font-size: 14px;">
+        일정 확정을 위해 아래 항목들에 대한 참여가 필요합니다. 각 카드에서 선택 후 저장하면 자동으로 반영됩니다.
+      </p>
+      <div class="pills" style="margin-top: 10px;">
+        <span class="pill">체크인 시간</span>
+        <span class="pill">Day 1 오후 활동</span>
+        <span class="pill">웰니스 코스</span>
+        <span class="pill">객실 구성</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- DAY 1 -->
+  <section>
+    <h2>🗓️ Day 1 · 9월 30일 (수)</h2>
+    <div class="card">
+      <div class="timeline">
+
+        <div class="tl-item">
+          <div class="tl-time">MORNING</div>
+          <div class="tl-title">🚄 부산역 집결 · 단체 이동</div>
+          <div class="tl-desc">KTX 편성 확정 후 공지 · 부산역 도착 즉시 단체 택시로 이동합니다. (서울역 또는 수서역 출발)</div>
+        </div>
+
+        <div class="tl-item">
+          <div class="tl-time">CHECK-IN</div>
+          <div class="tl-title">🏨 아난티 앳 부산 체크인</div>
+          <div class="tl-desc">체크인 시간을 아래 투표로 결정합니다. 선택된 시간대에 따라 오후 자유 활동 구성이 달라집니다.</div>
+
+          <!-- VOTE: 체크인 시간 -->
+          <div class="vote" data-vote="checkin" data-type="single">
+            <div class="vote-head">
+              <span class="vote-title">체크인 시간 선택</span>
+              <span class="vote-status">진행중</span>
+            </div>
+            <p class="vote-desc">이동 시간과 오후 활동 배분을 고려해 한 가지를 선택해 주세요.</p>
+            <div class="options">
+              <label class="opt">
+                <input type="radio" name="checkin" value="14:00" />
+                <span class="lbl">14:00 체크인
+                  <span class="hint">호텔에서 여유롭게 시작 · 오후 활동은 부대시설 중심</span>
+                </span>
+              </label>
+              <label class="opt">
+                <input type="radio" name="checkin" value="16:00" />
+                <span class="lbl">16:00 체크인
+                  <span class="hint">부산 관광 / 롯데월드 등 오프사이트 활동을 먼저 진행</span>
+                </span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div class="tl-item">
+          <div class="tl-time">AFTERNOON</div>
+          <div class="tl-title">🌊 오후 자유 활동 (택 1)</div>
+          <div class="tl-desc">체크인 전 여유 시간에 진행할 오프사이트 활동을 선택합니다.</div>
+
+          <!-- VOTE: 오후 활동 -->
+          <div class="vote" data-vote="afternoon" data-type="single">
+            <div class="vote-head">
+              <span class="vote-title">Day 1 오후 활동</span>
+              <span class="vote-status">진행중</span>
+            </div>
+            <p class="vote-desc">2-3그룹으로 나누어 진행합니다. 선호에 맞춰 자유롭게 선택해 주세요.</p>
+            <div class="options">
+              <label class="opt">
+                <input type="radio" name="afternoon" value="tour" />
+                <span class="lbl">🌊 부산 관광 · 맛집 투어
+                  <span class="hint">해운대·감천문화마을·자갈치 + 부산 대표 맛집 코스 · 이동 여유 있음</span>
+                </span>
+              </label>
+              <label class="opt">
+                <input type="radio" name="afternoon" value="lotteworld" />
+                <span class="lbl">🎢 부산 롯데월드
+                  <span class="hint">놀이기구 중심 · 활동적인 팀에 적합</span>
+                </span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div class="tl-item">
+          <div class="tl-time">WELLNESS</div>
+          <div class="tl-title">💆 호텔 웰니스 프로그램</div>
+          <div class="tl-desc">호텔 내 웰니스 프로그램은 아래 3개 코스 중 1개를 선택해 이용합니다.</div>
+
+          <!-- VOTE: 웰니스 -->
+          <div class="vote" data-vote="wellness" data-type="single">
+            <div class="vote-head">
+              <span class="vote-title">웰니스 코스 선택</span>
+              <span class="vote-status">진행중</span>
+            </div>
+            <p class="vote-desc">개인별 선호이므로 각자 하나씩 선택합니다.</p>
+            <div class="options">
+              <div class="opt-divider">코스 선택</div>
+              <label class="opt">
+                <input type="radio" name="wellness" value="back" />
+                <span class="lbl">후면 관리
+                  <span class="hint">등·어깨 중심 · 장시간 이동 후 회복에 적합</span>
+                </span>
+              </label>
+              <label class="opt">
+                <input type="radio" name="wellness" value="upper" />
+                <span class="lbl">상체 관리
+                  <span class="hint">목·어깨·팔 중심</span>
+                </span>
+              </label>
+              <label class="opt">
+                <input type="radio" name="wellness" value="lower" />
+                <span class="lbl">하체 관리
+                  <span class="hint">허리·다리 중심 · 관광 후 피로 회복에 적합</span>
+                </span>
+              </label>
+              <div class="opt-divider">또는</div>
+              <label class="opt opt-skip">
+                <input type="radio" name="wellness" value="skip" />
+                <span class="lbl">스파 참여 안함
+                  <span class="hint">20만원 예산으로 호텔 유료 부대시설(식음료 포함) 각자 이용 가능</span>
+                </span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div class="tl-item">
+          <div class="tl-time">FREE TIME</div>
+          <div class="tl-title">🏊 호텔 부대시설 자유 이용</div>
+          <div class="tl-desc">웰니스 이용 전후로 부대시설을 자유롭게 이용합니다. (아래 시설 참고)</div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- 객실 구성 -->
+  <section>
+    <h2>🛏️ 객실 구성</h2>
+    <div class="card">
+      <p style="margin: 0 0 12px; color: var(--ink-2); font-size: 14px;">
+        총 인원 및 룸메이트 선호를 반영해 최종 배정합니다. 아래 항목은 개인 선호 조사입니다.
+      </p>
+      <div class="vote" data-vote="room" data-type="single" style="margin:0;">
+        <div class="vote-head">
+          <span class="vote-title">객실 구성 선호</span>
+          <span class="vote-status">진행중</span>
+        </div>
+        <p class="vote-desc">최종 배정은 인원수·선호 조합을 고려해 조정됩니다.</p>
+        <div class="options">
+          <label class="opt">
+            <input type="radio" name="room" value="2p" />
+            <span class="lbl">2인 1실 <span class="hint">더 여유로운 공간</span></span>
+          </label>
+          <label class="opt">
+            <input type="radio" name="room" value="3p" />
+            <span class="lbl">3인 1실 <span class="hint">비용 효율 · 룸메이트와 시간</span></span>
+          </label>
+          <label class="opt">
+            <input type="radio" name="room" value="any" />
+            <span class="lbl">상관 없음 <span class="hint">배정에 따름</span></span>
+          </label>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 부대시설 -->
+  <section>
+    <h2>🏖️ 호텔 부대시설</h2>
+    <div class="card">
+      <div class="grid-2">
+        <div>
+          <div class="amenity">
+            <div class="ico">🌊</div>
+            <div>
+              <h4><a href="https://ananti.kr/ko/busan/BS0201" target="_blank" rel="noopener">오션 인피니티풀</a></h4>
+              <p>야외 · 계절 운영</p>
+            </div>
+          </div>
+          <div class="amenity">
+            <div class="ico">♨️</div>
+            <div>
+              <h4><a href="https://ananti.kr/ko/busan/BS1101" target="_blank" rel="noopener">실내 워터하우스</a></h4>
+              <p>온천 · 실내풀</p>
+            </div>
+          </div>
+          <div class="amenity">
+            <div class="ico">🏊</div>
+            <div>
+              <h4><a href="https://ananti.kr/ko/busan/BS0401" target="_blank" rel="noopener">맥퀸즈 풀</a></h4>
+              <p>사계절 실내 풀</p>
+            </div>
+          </div>
+          <div class="amenity">
+            <div class="ico">🏖️</div>
+            <div>
+              <h4><a href="https://ananti.kr/ko/atbusan/ABS0202" target="_blank" rel="noopener">실내 수영장</a></h4>
+              <p>빌라쥬 내 실내 풀</p>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div class="amenity">
+            <div class="ico">🏋️</div>
+            <div>
+              <h4><a href="https://ananti.kr/ko/busan/BS0402" target="_blank" rel="noopener">피트니스</a></h4>
+              <p>웰니스 맥퀸즈 클럽</p>
+            </div>
+          </div>
+          <div class="amenity">
+            <div class="ico">🧖</div>
+            <div>
+              <h4><a href="https://ananti.kr/ko/busan/BS0403" target="_blank" rel="noopener">사우나</a> <span class="tag-paid">유료</span></h4>
+              <p>온욕·건식 사우나</p>
+            </div>
+          </div>
+          <div class="amenity">
+            <div class="ico">🏄</div>
+            <div>
+              <h4><a href="https://ananti.kr/ko/event/2306" target="_blank" rel="noopener">서핑 강습</a> <span class="tag-paid">유료</span></h4>
+              <p>이벤트 · 사전 예약</p>
+            </div>
+          </div>
+          <div class="amenity">
+            <div class="ico">💆</div>
+            <div>
+              <h4><a href="https://ananti.kr/ko/event/2444" target="_blank" rel="noopener">세라젬 테라피/스파</a> <span class="tag-paid">유료</span></h4>
+              <p>테라피·스파 프로그램</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="info" style="margin-top: 16px;">
+        ℹ️ 투숙객은 <b>체크인 당일 13:00 ~ 체크아웃 당일 15:00</b>까지 부대시설을 자유롭게 이용할 수 있습니다.
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    2026 플레이샵 초안 · 최종 확정 전 버전 · 문의는 담당자에게
+  </footer>
+
+  </div><!-- /.main -->
+
+  <aside class="rail" id="rail">
+    <h3>참여자 현황 <span class="count" id="railCount">0명</span></h3>
+
+    <div class="rail-group">
+      <div class="rg-title">체크인 시간</div>
+      <div id="rail-checkin"></div>
+    </div>
+    <div class="rail-group">
+      <div class="rg-title">Day 1 오후 활동</div>
+      <div id="rail-afternoon"></div>
+    </div>
+    <div class="rail-group">
+      <div class="rg-title">웰니스 코스</div>
+      <div id="rail-wellness"></div>
+    </div>
+    <div class="rail-group">
+      <div class="rg-title">객실 구성</div>
+      <div id="rail-room"></div>
+    </div>
+
+    <p class="rail-note">
+      LDAP 입력 후 각 항목을 선택하면 이곳에 이름이 표시됩니다. (현재는 브라우저 로컬 저장 · 이후 서버 연동 예정)
+    </p>
+  </aside>
+
+  </div><!-- /.layout -->
+</div>
+
+<!-- Firebase SDKs (compat 버전 — script 태그 그대로 사용) -->
+<script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-database-compat.js"></script>
+<script>
+  // ─── Firebase 초기화 ─────────────────────────────────────────
+  const firebaseConfig = {
+    apiKey: "AIzaSyClEpBs65guS0HU0hztaKQb_Zm7ygq3fb0",
+    authDomain: "plat-playshop-2026.firebaseapp.com",
+    databaseURL: "https://plat-playshop-2026-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "plat-playshop-2026",
+    storageBucket: "plat-playshop-2026.firebasestorage.app",
+    messagingSenderId: "518823381403",
+    appId: "1:518823381403:web:80c9e48ce5aa77c9c1f93e"
+  };
+
+  // ─── 상태 ────────────────────────────────────────────────────
+  //   localStorage 'playshop-2026-me' : my LDAP
+  //   Firebase RTDB /votes/{ldap}    : { checkin, afternoon, wellness, room }
+  const MY_KEY = 'playshop-2026-me';
+
+  const LABELS = {
+    checkin:   { '14:00': '14:00 체크인', '16:00': '16:00 체크인' },
+    afternoon: { tour: '🌊 부산 관광·맛집', lotteworld: '🎢 롯데월드' },
+    wellness:  { back: '후면 관리', upper: '상체 관리', lower: '하체 관리', skip: '스파 참여 안함' },
+    room:      { '2p': '2인 1실', '3p': '3인 1실', any: '상관 없음' },
+  };
+
+  const ldapInput = document.getElementById('ldap');
+  const idStatus  = document.getElementById('idStatus');
+  const syncDot   = document.getElementById('syncDot');
+
+  let me = normalizeLdap(localStorage.getItem(MY_KEY) || '');
+  let votes = {};      // { [ldap]: { checkin, afternoon, wellness, room } }
+  let db = null;
+  let ready = false;   // 첫 데이터 수신 완료
+
+  ldapInput.value = me;
+  updateIdStatus();
+
+  // LDAP은 firebase key로도 쓰이므로 안전한 형태로 정규화
+  //   - 공백 제거, 소문자화
+  //   - firebase key 금지 문자(. # $ [ ] /) → _
+  function normalizeLdap(s) {
+    return String(s || '').trim().toLowerCase().replace(/[.#$\[\]\/]/g, '_');
+  }
+
+  ldapInput.addEventListener('input', () => {
+    me = normalizeLdap(ldapInput.value);
+    localStorage.setItem(MY_KEY, me);
+    updateIdStatus();
+    restoreMyChoices();
+    renderRail();
+  });
+
+  function updateIdStatus() {
+    if (me) {
+      idStatus.textContent = '✓ ' + me;
+      idStatus.classList.add('ok');
+    } else {
+      idStatus.textContent = '미입력';
+      idStatus.classList.remove('ok');
+    }
+  }
+
+  function setSync(state, text) {
+    syncDot.classList.remove('connected', 'error');
+    if (state) syncDot.classList.add(state);
+    syncDot.textContent = text;
+  }
+
+  // ─── Firebase 연결 ───────────────────────────────────────────
+  try {
+    firebase.initializeApp(firebaseConfig);
+    db = firebase.database();
+
+    // 연결 상태
+    db.ref('.info/connected').on('value', snap => {
+      if (snap.val() === true) setSync('connected', '실시간 동기화 중');
+      else setSync(null, '재연결 중…');
+    });
+
+    // votes 전체 구독 (사내용 소규모라 전체 fetch로 충분)
+    db.ref('votes').on('value', snap => {
+      votes = snap.val() || {};
+      ready = true;
+      restoreMyChoices();
+      renderRail();
+    }, err => {
+      console.error('votes read failed', err);
+      setSync('error', '읽기 권한 오류');
+    });
+  } catch (e) {
+    console.error('Firebase init failed', e);
+    setSync('error', '연결 실패');
+  }
+
+  function ensureMe() {
+    if (!me) {
+      alert('먼저 상단에 LDAP을 입력해 주세요. (예: grace.j)');
+      ldapInput.focus();
+      return false;
+    }
+    return true;
+  }
+
+  function initials(ldap) {
+    return (ldap || '?').slice(0, 2).toUpperCase();
+  }
+
+  function myVote() {
+    return votes[me] || {};
+  }
+
+  function restoreMyChoices() {
+    document.querySelectorAll('.vote').forEach(block => {
+      block.querySelectorAll('input').forEach(i => { i.checked = false; });
+      block.querySelectorAll('.opt').forEach(o => o.classList.remove('selected'));
+    });
+    if (!me) return;
+    const v = myVote();
+    document.querySelectorAll('.vote').forEach(block => {
+      const name = block.dataset.vote;
+      if (!v[name]) return;
+      const sel = block.querySelector(`input[value="${v[name]}"]`);
+      if (sel) {
+        sel.checked = true;
+        sel.closest('.opt').classList.add('selected');
+      }
+    });
+  }
+
+  document.querySelectorAll('.vote').forEach(block => {
+    const name = block.dataset.vote;
+    block.querySelectorAll('input').forEach(input => {
+      input.addEventListener('change', () => {
+        if (!ensureMe()) {
+          input.checked = false;
+          return;
+        }
+        if (!db) {
+          alert('실시간 서버에 연결되지 않았어요. 잠시 후 다시 시도해 주세요.');
+          input.checked = false;
+          return;
+        }
+        block.querySelectorAll('.opt').forEach(o => o.classList.remove('selected'));
+        input.closest('.opt').classList.add('selected');
+
+        // 서버로 즉시 전송 — onValue가 트리거되어 자동으로 재렌더링됨
+        db.ref(`votes/${me}/${name}`).set(input.value).catch(err => {
+          console.error('vote write failed', err);
+          alert('저장 실패: ' + (err.message || err));
+        });
+        db.ref(`votes/${me}/updatedAt`).set(firebase.database.ServerValue.TIMESTAMP);
+      });
+    });
+  });
+
+  function renderRail() {
+    const categories = ['checkin', 'afternoon', 'wellness', 'room'];
+    const participants = new Set();
+
+    categories.forEach(cat => {
+      const container = document.getElementById('rail-' + cat);
+      const rows = [];
+      Object.entries(votes).forEach(([ldap, v]) => {
+        if (!v || typeof v !== 'object' || !v[cat]) return;
+        participants.add(ldap);
+        rows.push({ ldap, value: v[cat] });
+      });
+
+      if (!rows.length) {
+        container.innerHTML = '<div class="rg-empty">아직 참여자 없음</div>';
+        return;
+      }
+
+      rows.sort((a, b) => a.ldap.localeCompare(b.ldap));
+      container.innerHTML = rows.map(r => `
+        <div class="rg-item">
+          <span class="who">
+            <span class="avatar">${escapeHtml(initials(r.ldap))}</span>
+            <span>${escapeHtml(r.ldap)}</span>
+          </span>
+          <span class="choice">${escapeHtml(LABELS[cat][r.value] || r.value)}</span>
+        </div>
+      `).join('');
+    });
+
+    document.getElementById('railCount').textContent = participants.size + '명';
+  }
+
+  function escapeHtml(s) {
+    return String(s).replace(/[&<>"']/g, c => ({
+      '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+    }[c]));
+  }
+</script>
+</body>
+</html>
