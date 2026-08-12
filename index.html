@@ -613,9 +613,9 @@
                 </span>
               </label>
               <label class="opt">
-                <input type="radio" name="afternoon" value="lotteworld" />
-                <span class="lbl">🎢 부산 롯데월드
-                  <span class="hint">놀이기구 중심 · 활동적인 팀에 적합</span>
+                <input type="radio" name="afternoon" value="hotel" />
+                <span class="lbl">🏨 호텔로 바로 갈게요
+                  <span class="hint">체크인 후 부대시설 · 휴식 중심으로 여유롭게</span>
                 </span>
               </label>
             </div>
@@ -834,7 +834,7 @@
 
   const LABELS = {
     checkin:   { '14:00': '14:00 체크인', '16:00': '16:00 체크인' },
-    afternoon: { tour: '🌊 부산 관광·맛집', lotteworld: '🎢 롯데월드' },
+    afternoon: { tour: '🌊 부산 관광·맛집', hotel: '🏨 호텔로 바로' },
     wellness:  { back: '후면 관리', upper: '상체 관리', lower: '하체 관리', skip: '스파 참여 안함' },
     room:      { '2p': '2인 1실', '3p': '3인 1실', any: '상관 없음' },
   };
@@ -972,7 +972,7 @@
   // 카테고리별로 어떤 선택지들을 보여줄지 정의 (LABELS 순서 유지)
   const CATEGORY_OPTIONS = {
     checkin:   ['14:00', '16:00'],
-    afternoon: ['tour', 'lotteworld'],
+    afternoon: ['tour', 'hotel'],
     wellness:  ['back', 'upper', 'lower', 'skip'],
     room:      ['2p', '3p', 'any'],
   };
