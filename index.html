@@ -129,42 +129,77 @@
     background: var(--bg-2); color: var(--muted);
     letter-spacing: .04em;
   }
-  .rail .rail-group { margin-bottom: 18px; }
+  .rail .rail-group { margin-bottom: 20px; }
   .rail .rail-group:last-child { margin-bottom: 0; }
   .rail .rg-title {
     font-size: 11px; font-weight: 700; letter-spacing: .08em;
     color: var(--muted); text-transform: uppercase;
-    margin-bottom: 8px;
+    margin-bottom: 10px;
     padding-bottom: 6px;
     border-bottom: 1px solid var(--line);
-  }
-  .rail .rg-item {
     display: flex; align-items: center; justify-content: space-between;
-    padding: 6px 0;
-    font-size: 13px;
   }
-  .rail .rg-item .who {
-    display: flex; align-items: center; gap: 8px;
-    font-weight: 600; color: var(--ink);
-    min-width: 0;
+  .rail .rg-title .rg-total {
+    font-size: 10px; font-weight: 600;
+    padding: 2px 6px; border-radius: 4px;
+    background: var(--bg-2); color: var(--muted);
+    letter-spacing: .04em;
   }
-  .rail .rg-item .avatar {
-    width: 22px; height: 22px; border-radius: 50%;
+
+  /* Group-by-choice cards */
+  .rg-bucket {
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 10px 12px;
+    margin-bottom: 8px;
+    background: #fbfaf6;
+  }
+  .rg-bucket:last-child { margin-bottom: 0; }
+  .rg-bucket-head {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+  .rg-bucket-label {
+    font-size: 12px; font-weight: 700; color: var(--ink);
+  }
+  .rg-bucket-count {
+    font-size: 10px; font-weight: 700;
+    padding: 2px 7px; border-radius: 999px;
+    background: var(--sea); color: #fff;
+    letter-spacing: .04em;
+  }
+  .rg-bucket-empty .rg-bucket-count {
+    background: var(--bg-2); color: var(--muted);
+  }
+  .rg-people {
+    display: flex; flex-wrap: wrap; gap: 4px;
+  }
+  .rg-person {
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 3px 9px 3px 4px;
+    border-radius: 999px;
+    background: #fff;
+    border: 1px solid var(--line);
+    font-size: 12px; font-weight: 600; color: var(--ink);
+    line-height: 1;
+  }
+  .rg-person .avatar {
+    width: 18px; height: 18px; border-radius: 50%;
     background: linear-gradient(135deg, var(--sea), var(--sea-2));
-    color: #fff; font-size: 11px; font-weight: 700;
+    color: #fff; font-size: 9px; font-weight: 700;
     display: flex; align-items: center; justify-content: center;
     flex-shrink: 0;
   }
-  .rail .rg-item .choice {
-    font-size: 12px; color: var(--ink-2); font-weight: 500;
-    text-align: right;
-    padding-left: 8px;
+  /* Highlight my chip */
+  .rg-person.is-me {
+    background: #eef7f8;
+    border-color: var(--sea);
+    color: var(--sea);
   }
-  .rail .rg-empty {
-    font-size: 12px; color: var(--muted);
+  .rg-empty-text {
+    font-size: 11px; color: var(--muted);
     font-style: italic;
-    text-align: center;
-    padding: 8px 0;
   }
   .rail-note {
     font-size: 11px; color: var(--muted);
@@ -753,24 +788,24 @@
     <h3>참여자 현황 <span class="count" id="railCount">0명</span></h3>
 
     <div class="rail-group">
-      <div class="rg-title">체크인 시간</div>
+      <div class="rg-title"><span>체크인 시간</span><span class="rg-total" id="rail-total-checkin">0명</span></div>
       <div id="rail-checkin"></div>
     </div>
     <div class="rail-group">
-      <div class="rg-title">Day 1 오후 활동</div>
+      <div class="rg-title"><span>Day 1 오후 활동</span><span class="rg-total" id="rail-total-afternoon">0명</span></div>
       <div id="rail-afternoon"></div>
     </div>
     <div class="rail-group">
-      <div class="rg-title">웰니스 코스</div>
+      <div class="rg-title"><span>웰니스 코스</span><span class="rg-total" id="rail-total-wellness">0명</span></div>
       <div id="rail-wellness"></div>
     </div>
     <div class="rail-group">
-      <div class="rg-title">객실 구성</div>
+      <div class="rg-title"><span>객실 구성</span><span class="rg-total" id="rail-total-room">0명</span></div>
       <div id="rail-room"></div>
     </div>
 
     <p class="rail-note">
-      LDAP 입력 후 각 항목을 선택하면 이곳에 이름이 표시됩니다. (현재는 브라우저 로컬 저장 · 이후 서버 연동 예정)
+      같은 선택을 한 사람들이 하나의 카드에 묶여 표시됩니다. 팀 배정 시 참고하세요.
     </p>
   </aside>
 
@@ -934,34 +969,68 @@
     });
   });
 
+  // 카테고리별로 어떤 선택지들을 보여줄지 정의 (LABELS 순서 유지)
+  const CATEGORY_OPTIONS = {
+    checkin:   ['14:00', '16:00'],
+    afternoon: ['tour', 'lotteworld'],
+    wellness:  ['back', 'upper', 'lower', 'skip'],
+    room:      ['2p', '3p', 'any'],
+  };
+
   function renderRail() {
-    const categories = ['checkin', 'afternoon', 'wellness', 'room'];
     const participants = new Set();
 
-    categories.forEach(cat => {
+    Object.entries(CATEGORY_OPTIONS).forEach(([cat, options]) => {
       const container = document.getElementById('rail-' + cat);
-      const rows = [];
+
+      // 선택지 → 참여자 목록 매핑
+      const buckets = {};
+      options.forEach(opt => { buckets[opt] = []; });
+
       Object.entries(votes).forEach(([ldap, v]) => {
-        if (!v || typeof v !== 'object' || !v[cat]) return;
+        if (!v || typeof v !== 'object') return;
+        const choice = v[cat];
+        if (!choice) return;
         participants.add(ldap);
-        rows.push({ ldap, value: v[cat] });
+        if (!buckets[choice]) buckets[choice] = []; // 미지정 값 방어
+        buckets[choice].push(ldap);
       });
 
-      if (!rows.length) {
-        container.innerHTML = '<div class="rg-empty">아직 참여자 없음</div>';
-        return;
-      }
+      // 카테고리 총 참여자 수
+      const catTotal = Object.values(buckets).reduce((s, arr) => s + arr.length, 0);
 
-      rows.sort((a, b) => a.ldap.localeCompare(b.ldap));
-      container.innerHTML = rows.map(r => `
-        <div class="rg-item">
-          <span class="who">
-            <span class="avatar">${escapeHtml(initials(r.ldap))}</span>
-            <span>${escapeHtml(r.ldap)}</span>
-          </span>
-          <span class="choice">${escapeHtml(LABELS[cat][r.value] || r.value)}</span>
-        </div>
-      `).join('');
+      // 총계 뱃지 업데이트
+      const totalEl = document.getElementById('rail-total-' + cat);
+      if (totalEl) totalEl.textContent = catTotal + '명';
+
+      // 버킷 순서: 선택자 많은 순 → 그다음 정의된 옵션 순
+      const orderedOptions = Object.keys(buckets).sort((a, b) => {
+        const diff = buckets[b].length - buckets[a].length;
+        if (diff !== 0) return diff;
+        return options.indexOf(a) - options.indexOf(b);
+      });
+
+      container.innerHTML = orderedOptions.map(opt => {
+        const people = buckets[opt].slice().sort((a, b) => a.localeCompare(b));
+        const isEmpty = people.length === 0;
+        const label = LABELS[cat][opt] || opt;
+        return `
+          <div class="rg-bucket${isEmpty ? ' rg-bucket-empty' : ''}">
+            <div class="rg-bucket-head">
+              <span class="rg-bucket-label">${escapeHtml(label)}</span>
+              <span class="rg-bucket-count">${people.length}명</span>
+            </div>
+            ${isEmpty
+              ? '<div class="rg-empty-text">아직 선택자 없음</div>'
+              : `<div class="rg-people">${people.map(ldap => `
+                  <span class="rg-person${ldap === me ? ' is-me' : ''}">
+                    <span class="avatar">${escapeHtml(initials(ldap))}</span>
+                    <span>${escapeHtml(ldap)}</span>
+                  </span>
+                `).join('')}</div>`}
+          </div>
+        `;
+      }).join('');
     });
 
     document.getElementById('railCount').textContent = participants.size + '명';
