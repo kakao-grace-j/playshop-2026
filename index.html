@@ -452,6 +452,44 @@
   }
   @media (max-width: 720px) { .map-frame { height: 320px; } }
 
+  /* Collapsible map section */
+  .map-collapsible {
+    border-top: 1px solid var(--line);
+  }
+  .map-collapsible:first-of-type { border-top: 0; }
+  .map-collapsible > summary {
+    list-style: none;
+    cursor: pointer;
+    padding: 14px 18px;
+    background: linear-gradient(180deg, #ffffff 0%, #fafaf5 100%);
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 12px;
+    transition: background .15s ease;
+  }
+  .map-collapsible > summary::-webkit-details-marker { display: none; }
+  .map-collapsible > summary:hover { background: #f5f2e9; }
+  .map-collapsible > summary .title {
+    font-size: 14px; font-weight: 700;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .map-collapsible > summary .actions {
+    display: flex; align-items: center; gap: 12px;
+  }
+  .map-collapsible > summary .ext {
+    font-size: 12px; font-weight: 600;
+    color: var(--sea); text-decoration: none;
+  }
+  .map-collapsible > summary .ext:hover { text-decoration: underline; }
+  .map-collapsible > summary .chevron {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 22px; height: 22px;
+    color: var(--muted);
+    font-size: 12px; font-weight: 700;
+    transition: transform .2s ease;
+  }
+  .map-collapsible[open] > summary .chevron { transform: rotate(180deg); }
+  .map-collapsible[open] > summary { border-bottom: 1px solid var(--line); }
+
   /* Info banner */
   .info {
     background: rgba(45,107,122,.06);
@@ -522,17 +560,41 @@
   <section>
     <h2>🗺️ 아난티 앳 부산 지도</h2>
     <div class="map-card">
-      <div class="map-head">
-        <div class="title">🗺️ 빌라쥬 · 부대시설 위치</div>
-        <a href="https://ananti.kr/ko/busan/journey/map" target="_blank" rel="noopener">전체 지도 열기 ↗</a>
-      </div>
-      <iframe
-        class="map-frame"
-        src="https://ananti.kr/ko/busan/journey/map"
-        title="아난티 앳 부산 지도"
-        loading="lazy"
-        referrerpolicy="no-referrer-when-downgrade"
-      ></iframe>
+
+      <details class="map-collapsible" open>
+        <summary>
+          <span class="title">🗺️ 아난티 앳 부산 전체 지도</span>
+          <span class="actions">
+            <a href="https://ananti.kr/ko/busan/journey/map" target="_blank" rel="noopener" class="ext" onclick="event.stopPropagation()">새 창 ↗</a>
+            <span class="chevron">▾</span>
+          </span>
+        </summary>
+        <iframe
+          class="map-frame"
+          src="https://ananti.kr/ko/busan/journey/map"
+          title="아난티 앳 부산 전체 지도"
+          loading="lazy"
+          referrerpolicy="no-referrer-when-downgrade"
+        ></iframe>
+      </details>
+
+      <details class="map-collapsible">
+        <summary>
+          <span class="title">🏘️ 빌라쥬 지도</span>
+          <span class="actions">
+            <a href="https://ananti.kr/ko/atbusan/journey/map" target="_blank" rel="noopener" class="ext" onclick="event.stopPropagation()">새 창 ↗</a>
+            <span class="chevron">▾</span>
+          </span>
+        </summary>
+        <iframe
+          class="map-frame"
+          src="https://ananti.kr/ko/atbusan/journey/map"
+          title="아난티 앳 부산 빌라쥬 지도"
+          loading="lazy"
+          referrerpolicy="no-referrer-when-downgrade"
+        ></iframe>
+      </details>
+
     </div>
   </section>
 
