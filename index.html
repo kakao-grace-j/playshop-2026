@@ -412,6 +412,21 @@
   .amenity h4 a:hover { color: var(--sea); }
   .amenity h4 a:hover::after { color: var(--sea); transform: translate(1px,-1px); }
   .amenity p { margin: 0; font-size: 13px; color: var(--ink-2); }
+  .zone-h {
+    font-size: 11px; font-weight: 700; letter-spacing: .1em;
+    color: var(--muted); text-transform: uppercase;
+    margin: 0 0 8px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--line);
+    display: flex; align-items: center; gap: 8px;
+  }
+  .zone-h .zone-tag {
+    display: inline-flex; align-items: center;
+    font-size: 10px; font-weight: 700; letter-spacing: .06em;
+    padding: 2px 7px; border-radius: 4px;
+    background: rgba(45,107,122,.12); color: var(--sea);
+  }
+  .zone-h.zone-village .zone-tag { background: rgba(217,119,87,.15); color: var(--coral); }
   .tag-paid {
     display: inline-block;
     margin-left: 4px;
@@ -867,6 +882,11 @@
   <section>
     <h2>🏖️ 호텔 부대시설</h2>
     <div class="card">
+      <!-- 빌라쥬 존 (우리 숙소) -->
+      <div class="zone-h zone-village">
+        <span class="zone-tag">Village de Ananti</span>
+        <span>빌라쥬 (우리 숙소)</span>
+      </div>
       <div class="grid-2">
         <div>
           <div class="amenity">
@@ -876,6 +896,39 @@
               <p>야외 수영장</p>
             </div>
           </div>
+          <div class="amenity">
+            <div class="ico">🏖️</div>
+            <div>
+              <h4><a href="https://ananti.kr/ko/atbusan/ABS0202" target="_blank" rel="noopener">실내 수영장</a></h4>
+              <p>빌라쥬 내 실내 풀</p>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div class="amenity">
+            <div class="ico">📚</div>
+            <div>
+              <h4><a href="https://ananti.kr/ko/atbusan/ABS0901" target="_blank" rel="noopener">이터널 저니</a></h4>
+              <p>라이프스타일 서점 · 카페</p>
+            </div>
+          </div>
+          <div class="amenity">
+            <div class="ico">💆</div>
+            <div>
+              <h4><a href="https://ananti.kr/ko/event/2444" target="_blank" rel="noopener">세라젬 테라피/스파</a> <span class="tag-paid">유료</span></h4>
+              <p>테라피·스파 프로그램</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 코브 존 -->
+      <div class="zone-h" style="margin-top: 20px;">
+        <span class="zone-tag">Ananti Cove</span>
+        <span>코브 (셔틀 이동)</span>
+      </div>
+      <div class="grid-2">
+        <div>
           <div class="amenity">
             <div class="ico">🌊</div>
             <div>
@@ -895,13 +948,6 @@
             <div>
               <h4><a href="https://ananti.kr/ko/busan/BS0401" target="_blank" rel="noopener">맥퀸즈 풀</a></h4>
               <p>사계절 실내 풀</p>
-            </div>
-          </div>
-          <div class="amenity">
-            <div class="ico">🏖️</div>
-            <div>
-              <h4><a href="https://ananti.kr/ko/atbusan/ABS0202" target="_blank" rel="noopener">실내 수영장</a></h4>
-              <p>빌라쥬 내 실내 풀</p>
             </div>
           </div>
         </div>
@@ -927,15 +973,35 @@
               <p>이벤트 · 사전 예약</p>
             </div>
           </div>
+        </div>
+      </div>
+
+      <!-- 주변 -->
+      <div class="zone-h" style="margin-top: 20px;">
+        <span class="zone-tag">Around</span>
+        <span>단지 · 주변</span>
+      </div>
+      <div class="grid-2">
+        <div>
           <div class="amenity">
-            <div class="ico">💆</div>
+            <div class="ico">🏘️</div>
             <div>
-              <h4><a href="https://ananti.kr/ko/event/2444" target="_blank" rel="noopener">세라젬 테라피/스파</a> <span class="tag-paid">유료</span></h4>
-              <p>테라피·스파 프로그램</p>
+              <h4><a href="https://ananti.kr/ko/busan/journey/map" target="_blank" rel="noopener">아난티 타운</a></h4>
+              <p>다이닝 · 카페 · 편집숍이 모인 상업 구역</p>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div class="amenity">
+            <div class="ico">🌅</div>
+            <div>
+              <h4>해변 산책로</h4>
+              <p>오시리아 해안길 · 아침 산책 추천</p>
             </div>
           </div>
         </div>
       </div>
+
       <div class="info" style="margin-top: 16px;">
         ℹ️ <b>수영장</b>은 투숙객 기준 <b>체크인 당일 13:00 ~ 체크아웃 당일 15:00</b>까지 자유롭게 이용 가능합니다. (그 외 시설은 체크아웃 시간까지만 이용 가능)
       </div>
