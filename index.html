@@ -314,6 +314,42 @@
   .tl-title { font-size: 17px; font-weight: 700; margin: 2px 0 6px; }
   .tl-desc { color: var(--ink-2); font-size: 14px; }
 
+  /* Mini schedule inside timeline description */
+  .mini-schedule {
+    margin-top: 10px;
+    padding: 12px 14px;
+    background: #fafaf5;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    font-size: 13px;
+  }
+  .mini-schedule-h {
+    font-size: 13px; font-weight: 700; color: var(--ink);
+    margin-bottom: 6px;
+  }
+  .mini-schedule-note {
+    font-size: 12.5px; color: var(--ink-2);
+    margin-bottom: 8px;
+    line-height: 1.55;
+  }
+  .mini-schedule-row {
+    display: flex; align-items: baseline; gap: 10px;
+    padding: 3px 0;
+  }
+  .mini-schedule-row .mini-k {
+    min-width: 108px;
+    font-size: 12px; font-weight: 600; color: var(--ink-2);
+    flex-shrink: 0;
+  }
+  .mini-schedule-row .mini-v {
+    font-size: 13px; font-weight: 600; color: var(--ink);
+    font-variant-numeric: tabular-nums;
+  }
+  @media (max-width: 480px) {
+    .mini-schedule-row { flex-direction: column; gap: 2px; padding: 5px 0; }
+    .mini-schedule-row .mini-k { min-width: 0; font-size: 11px; }
+  }
+
   /* Vote block */
   .vote {
     border: 1px dashed var(--coral);
@@ -687,7 +723,14 @@
         <div class="tl-item">
           <div class="tl-time">11:30 · 집결</div>
           <div class="tl-title">🚄 부산역 집결</div>
-          <div class="tl-desc"><b>11시 30분까지</b> 부산역 도착 · KTX 티켓은 각자 예매 진행 (서울역 또는 수서역 출발). 도착 후 단체 이동합니다.</div>
+          <div class="tl-desc">
+            <b>11시 30분까지</b> 부산역 도착 · KTX 티켓은 각자 예매 진행 (서울역 또는 수서역 출발). 도착 후 단체 이동합니다.
+            <div class="mini-schedule">
+              <div class="mini-schedule-h">🧳 양손의 자유, '러기지 프리' 서비스</div>
+              <div class="mini-schedule-note">부산역 1층 아난티 리무진 버스 탑승 장소에서 <b>11:50</b>에 수하물을 맡기고 점심식사하러 이동합니다.</div>
+              <div class="mini-schedule-row"><span class="mini-k">🚐 부산역 → 아난티</span><span class="mini-v">12:00 · 13:00 · 15:00 · 16:00</span></div>
+            </div>
+          </div>
         </div>
 
         <div class="tl-item">
@@ -840,7 +883,14 @@
         <div class="tl-item">
           <div class="tl-time">SEE YOU</div>
           <div class="tl-title">👋 해산</div>
-          <div class="tl-desc">각자 일정에 맞춰 자유 해산. 부산역 이동 편의를 위해 단체 택시 지원 예정.</div>
+          <div class="tl-desc">
+            각자 일정에 맞춰 자유 해산. 부산역 가는 경우 호텔 리무진 서비스 이용.
+            <div class="mini-schedule">
+              <div class="mini-schedule-h">🚐 아난티 → 부산역</div>
+              <div class="mini-schedule-row"><span class="mini-k">코브 출발</span><span class="mini-v">10:30 · 11:30 · 13:30 · 14:30</span></div>
+              <div class="mini-schedule-row"><span class="mini-k">빌라쥬 출발</span><span class="mini-v">10:32 · 11:32 · 13:32 · 14:32</span></div>
+            </div>
+          </div>
         </div>
 
       </div>
