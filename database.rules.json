@@ -1,0 +1,28 @@
+{
+  "rules": {
+    "votes": {
+      ".read": true,
+      "$ldap": {
+        ".write": true,
+        "checkin": {
+          ".validate": "newData.isString() && (newData.val() === '14:00' || newData.val() === '17:00')"
+        },
+        "afternoon": {
+          ".validate": "newData.isString() && (newData.val() === 'fishing' || newData.val() === 'hotel')"
+        },
+        "wellness": {
+          ".validate": "newData.isString() && (newData.val() === 'back' || newData.val() === 'upper' || newData.val() === 'lower' || newData.val() === 'skip')"
+        },
+        "room": {
+          ".validate": "newData.isString() && (newData.val() === '2p' || newData.val() === '3p' || newData.val() === 'any')"
+        },
+        "updatedAt": {
+          ".validate": "newData.isNumber()"
+        },
+        "$other": {
+          ".validate": false
+        }
+      }
+    }
+  }
+}

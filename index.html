@@ -1156,6 +1156,23 @@
     room:      { '2p': '2인 1실', '3p': '3인 1실', any: '상관 없음' },
   };
 
+  // 일정 개편(관광 투어 → 배낚시) 이전에 저장된 값을 현재 선택지로 매핑
+  const LEGACY_VALUES = {
+    afternoon: { tour: 'fishing' },
+    checkin:   { '16:00': '17:00' },
+  };
+
+  function normalizeVotes(raw) {
+    return Object.fromEntries(
+      Object.entries(raw).map(([ldap, v]) => {
+        if (!v || typeof v !== 'object') return [ldap, v];
+        return [ldap, Object.fromEntries(
+          Object.entries(v).map(([cat, val]) => [cat, LEGACY_VALUES[cat]?.[val] ?? val])
+        )];
+      })
+    );
+  }
+
   const ldapInput = document.getElementById('ldap');
   const idStatus  = document.getElementById('idStatus');
   const syncDot   = document.getElementById('syncDot');
@@ -1212,7 +1229,7 @@
 
     // votes 전체 구독 (사내용 소규모라 전체 fetch로 충분)
     db.ref('votes').on('value', snap => {
-      votes = snap.val() || {};
+      votes = normalizeVotes(snap.val() || {});
       ready = true;
       restoreMyChoices();
       renderRail();
