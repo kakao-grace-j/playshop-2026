@@ -13,9 +13,6 @@
         "wellness": {
           ".validate": "newData.isString() && (newData.val() === 'back' || newData.val() === 'upper' || newData.val() === 'lower' || newData.val() === 'skip')"
         },
-        "room": {
-          ".validate": "newData.isString() && (newData.val() === '2p' || newData.val() === '3p' || newData.val() === 'any')"
-        },
         "updatedAt": {
           ".validate": "newData.isNumber()"
         },

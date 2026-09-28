@@ -291,6 +291,40 @@
     .wrap { padding: 20px 16px 64px; }
   }
 
+  /* 방 배정 */
+  .room-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 12px;
+  }
+  .room-box {
+    border: 1px solid var(--line); border-radius: 12px;
+    padding: 14px 16px; background: var(--bg);
+  }
+  .room-box.is-mine { border-color: var(--sea); background: #eef7f8; }
+  .room-no {
+    display: flex; align-items: center; justify-content: space-between;
+    font-size: 15px; font-weight: 800; color: var(--sea);
+    margin-bottom: 10px;
+  }
+  .room-cap {
+    font-size: 11px; font-weight: 600; color: var(--muted);
+    background: var(--card); border: 1px solid var(--line);
+    border-radius: 999px; padding: 2px 8px;
+  }
+  .room-people { display: flex; flex-wrap: wrap; gap: 6px; }
+  .room-person {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: var(--card); border: 1px solid var(--line);
+    border-radius: 999px; padding: 4px 10px 4px 4px;
+    font-size: 13px; font-weight: 600;
+  }
+  .room-person .avatar {
+    width: 22px; height: 22px; border-radius: 50%;
+    background: var(--sand); color: #5a4a2a;
+    display: grid; place-items: center;
+    font-size: 10px; font-weight: 800; text-transform: uppercase;
+  }
+
   /* Timeline (Day 1) */
   .timeline {
     position: relative;
@@ -713,7 +747,6 @@
         <span class="pill">체크인 시간</span>
         <span class="pill">Day 1 오후 활동</span>
         <span class="pill">웰니스 코스</span>
-        <span class="pill">객실 구성</span>
       </div>
     </div>
   </section>
@@ -915,34 +948,14 @@
     </div>
   </section>
 
-  <!-- 객실 구성 -->
+  <!-- 방 배정 -->
   <section>
-    <h2>🛏️ 객실 구성</h2>
+    <h2>🛏️ 방 배정 <span class="badge">확정</span></h2>
     <div class="card">
-      <p style="margin: 0 0 12px; color: var(--ink-2); font-size: 14px;">
-        총 인원 및 룸메이트 선호를 반영해 최종 배정합니다. 아래 항목은 개인 선호 조사입니다.
+      <p style="margin: 0 0 14px; color: var(--ink-2); font-size: 14px;">
+        총 11명 · 5개 객실로 배정 완료되었습니다. 상단에 LDAP을 입력하면 본인 방이 강조 표시됩니다.
       </p>
-      <div class="vote" data-vote="room" data-type="single" style="margin:0;">
-        <div class="vote-head">
-          <span class="vote-title">객실 구성 선호</span>
-          <span class="vote-status">진행중</span>
-        </div>
-        <p class="vote-desc">최종 배정은 인원수·선호 조합을 고려해 조정됩니다.</p>
-        <div class="options">
-          <label class="opt">
-            <input type="radio" name="room" value="2p" />
-            <span class="lbl">2인 1실 <span class="hint">더 여유로운 공간</span></span>
-          </label>
-          <label class="opt">
-            <input type="radio" name="room" value="3p" />
-            <span class="lbl">3인 1실 <span class="hint">비용 효율 · 룸메이트와 시간</span></span>
-          </label>
-          <label class="opt">
-            <input type="radio" name="room" value="any" />
-            <span class="lbl">상관 없음 <span class="hint">배정에 따름</span></span>
-          </label>
-        </div>
-      </div>
+      <div class="room-grid" id="roomGrid"></div>
     </div>
   </section>
 
@@ -1134,10 +1147,6 @@
       <div class="rg-title"><span>웰니스 코스</span><span class="rg-total" id="rail-total-wellness">0명</span></div>
       <div id="rail-wellness"></div>
     </div>
-    <div class="rail-group">
-      <div class="rg-title"><span>객실 구성</span><span class="rg-total" id="rail-total-room">0명</span></div>
-      <div id="rail-room"></div>
-    </div>
 
     <p class="rail-note">
       같은 선택을 한 사람들이 하나의 카드에 묶여 표시됩니다. 팀 배정 시 참고하세요.
@@ -1164,15 +1173,23 @@
 
   // ─── 상태 ────────────────────────────────────────────────────
   //   localStorage 'playshop-2026-me' : my LDAP
-  //   Firebase RTDB /votes/{ldap}    : { checkin, afternoon, wellness, room }
+  //   Firebase RTDB /votes/{ldap}    : { checkin, afternoon, wellness }
   const MY_KEY = 'playshop-2026-me';
 
   const LABELS = {
     checkin:   { '14:00': '14:00 체크인', '17:00': '17:00 이후 체크인' },
     afternoon: { fishing: '🎣 배낚시 참여', hotel: '🏨 호텔 개인 시간' },
     wellness:  { back: '후면 관리', upper: '상체 관리', lower: '하체 관리', skip: '스파 참여 안함' },
-    room:      { '2p': '2인 1실', '3p': '3인 1실', any: '상관 없음' },
   };
+
+  // 확정된 방 배정
+  const ROOMS = [
+    { no: '101호', people: ['lloyd', 'luca'] },
+    { no: '102호', people: ['danny', 'pedro'] },
+    { no: '103호', people: ['andy', 'peter'] },
+    { no: '104호', people: ['felix', 'zero', 'steve'] },
+    { no: '105호', people: ['yum', 'grace'] },
+  ];
 
   // 일정 개편(관광 투어 → 배낚시) 이전에 저장된 값을 현재 선택지로 매핑
   const LEGACY_VALUES = {
@@ -1196,7 +1213,7 @@
   const syncDot   = document.getElementById('syncDot');
 
   let me = normalizeLdap(localStorage.getItem(MY_KEY) || '');
-  let votes = {};      // { [ldap]: { checkin, afternoon, wellness, room } }
+  let votes = {};      // { [ldap]: { checkin, afternoon, wellness } }
   let db = null;
   let ready = false;   // 첫 데이터 수신 완료
 
@@ -1216,6 +1233,7 @@
     updateIdStatus();
     restoreMyChoices();
     renderRail();
+    renderRooms();
   });
 
   function updateIdStatus() {
@@ -1326,8 +1344,33 @@
     checkin:   ['14:00', '17:00'],
     afternoon: ['fishing', 'hotel'],
     wellness:  ['back', 'upper', 'lower', 'skip'],
-    room:      ['2p', '3p', 'any'],
   };
+
+  // 입력된 LDAP은 'grace.j'처럼 도메인 접미가 붙을 수 있어 앞부분만 비교
+  function ldapBase(s) {
+    return String(s || '').split(/[._]/)[0];
+  }
+
+  function renderRooms() {
+    const myBase = ldapBase(me);
+    document.getElementById('roomGrid').innerHTML = ROOMS.map(room => {
+      const isMine = !!myBase && room.people.includes(myBase);
+      return `
+        <div class="room-box${isMine ? ' is-mine' : ''}">
+          <div class="room-no">
+            <span>${escapeHtml(room.no)}</span>
+            <span class="room-cap">${room.people.length}인실</span>
+          </div>
+          <div class="room-people">${room.people.map(p => `
+            <span class="room-person">
+              <span class="avatar">${escapeHtml(initials(p))}</span>
+              <span>${escapeHtml(p)}</span>
+            </span>
+          `).join('')}</div>
+        </div>
+      `;
+    }).join('');
+  }
 
   function renderRail() {
     const participants = new Set();
@@ -1393,6 +1436,8 @@
       '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
     }[c]));
   }
+
+  renderRooms();
 </script>
 </body>
 </html>
