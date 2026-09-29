@@ -265,13 +265,14 @@
     letter-spacing: -.01em;
     display: flex; align-items: center; gap: 10px;
   }
-  h2 .badge {
+  h2 .badge, .tl-title .badge {
     font-size: 11px; font-weight: 700;
     color: var(--sea);
     background: rgba(45,107,122,.1);
     padding: 3px 8px; border-radius: 6px;
     letter-spacing: .04em;
   }
+  .tl-title .badge { display: inline-block; vertical-align: 2px; margin-left: 4px; }
   h3 { font-size: 16px; font-weight: 700; margin: 0 0 6px; }
 
   /* Cards */
@@ -846,6 +847,17 @@
         </div>
 
         <div class="tl-item">
+          <div class="tl-time">17:00 · 웰니스</div>
+          <div class="tl-title">💆 웰니스 프로그램 <span class="badge">확정</span></div>
+          <div class="tl-desc">호텔 내 스파에서 웰니스 프로그램을 진행합니다. <b>일부만 참여하는 선택 프로그램</b>이므로, 미참여자는 부대시설 이용 · 개인 시간을 보냅니다.
+            <div class="mini-schedule">
+              <div class="mini-schedule-h">🧖 Day 1 17:00 참여자</div>
+              <div class="mini-schedule-row"><span class="mini-k">👥 2명</span><span class="mini-v">andy · pedro</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="tl-item">
           <div class="tl-time">17:00–19:00</div>
           <div class="tl-title">🏊 호텔 부대시설 이용</div>
           <div class="tl-desc">저녁 식사 전까지 호텔 부대시설을 자유롭게 이용합니다. 수영장·워터하우스·피트니스·북스토어 등 (하단 부대시설 목록 참고).</div>
@@ -880,44 +892,12 @@
         </div>
 
         <div class="tl-item">
-          <div class="tl-time">MORNING</div>
-          <div class="tl-title">💆 오전 웰니스 프로그램</div>
-          <div class="tl-desc">호텔 내 스파에서 웰니스 코스를 각자 자유롭게 이용합니다. <b>일부만 참여하는 선택 프로그램</b>이므로, 미참여자는 개인 시간을 이어서 보냅니다. 아래에서 코스를 선택해 주세요.</div>
-
-          <!-- VOTE: 웰니스 -->
-          <div class="vote" data-vote="wellness" data-type="single">
-            <div class="vote-head">
-              <span class="vote-title">웰니스 코스 선택</span>
-              <span class="vote-status">진행중</span>
-            </div>
-            <p class="vote-desc">개인별 선호이므로 각자 하나씩 선택합니다.</p>
-            <div class="options">
-              <div class="opt-divider">코스 선택</div>
-              <label class="opt">
-                <input type="radio" name="wellness" value="back" />
-                <span class="lbl">후면 관리
-                  <span class="hint">등·어깨 중심 · 장시간 이동 후 회복에 적합</span>
-                </span>
-              </label>
-              <label class="opt">
-                <input type="radio" name="wellness" value="upper" />
-                <span class="lbl">상체 관리
-                  <span class="hint">목·어깨·팔 중심</span>
-                </span>
-              </label>
-              <label class="opt">
-                <input type="radio" name="wellness" value="lower" />
-                <span class="lbl">하체 관리
-                  <span class="hint">허리·다리 중심 · 전날 활동 후 피로 회복에 적합</span>
-                </span>
-              </label>
-              <div class="opt-divider">또는</div>
-              <label class="opt opt-skip">
-                <input type="radio" name="wellness" value="skip" />
-                <span class="lbl">스파 참여 안함
-                  <span class="hint">19만원 예산으로 호텔 유료 부대시설(식음료 포함) 각자 이용 가능</span>
-                </span>
-              </label>
+          <div class="tl-time">10:00 · 웰니스</div>
+          <div class="tl-title">💆 웰니스 프로그램 <span class="badge">확정</span></div>
+          <div class="tl-desc">호텔 내 스파에서 웰니스 프로그램을 진행합니다. 미참여자는 개인 시간을 이어서 보냅니다.
+            <div class="mini-schedule">
+              <div class="mini-schedule-h">🧖 Day 2 10:00 참여자</div>
+              <div class="mini-schedule-row"><span class="mini-k">👥 3명</span><span class="mini-v">zero · luca · grace</span></div>
             </div>
           </div>
         </div>
@@ -1146,10 +1126,6 @@
       <div class="rg-title"><span>Day 1 오후 활동</span><span class="rg-total" id="rail-total-afternoon">0명</span></div>
       <div id="rail-afternoon"></div>
     </div>
-    <div class="rail-group">
-      <div class="rg-title"><span>웰니스 코스</span><span class="rg-total" id="rail-total-wellness">0명</span></div>
-      <div id="rail-wellness"></div>
-    </div>
 
     <p class="rail-note">
       같은 선택을 한 사람들이 하나의 카드에 묶여 표시됩니다. 팀 배정 시 참고하세요.
@@ -1176,13 +1152,12 @@
 
   // ─── 상태 ────────────────────────────────────────────────────
   //   localStorage 'playshop-2026-me' : my LDAP
-  //   Firebase RTDB /votes/{ldap}    : { checkin, afternoon, wellness }
+  //   Firebase RTDB /votes/{ldap}    : { checkin, afternoon }
   const MY_KEY = 'playshop-2026-me';
 
   const LABELS = {
     checkin:   { '14:00': '14:00 체크인', '17:00': '17:00 이후 체크인' },
     afternoon: { fishing: '🎣 배낚시 참여', hotel: '🏨 호텔 개인 시간' },
-    wellness:  { back: '후면 관리', upper: '상체 관리', lower: '하체 관리', skip: '스파 참여 안함' },
   };
 
   // 확정된 방 배정
@@ -1216,7 +1191,7 @@
   const syncDot   = document.getElementById('syncDot');
 
   let me = normalizeLdap(localStorage.getItem(MY_KEY) || '');
-  let votes = {};      // { [ldap]: { checkin, afternoon, wellness } }
+  let votes = {};      // { [ldap]: { checkin, afternoon } }
   let db = null;
   let ready = false;   // 첫 데이터 수신 완료
 
@@ -1346,7 +1321,6 @@
   const CATEGORY_OPTIONS = {
     checkin:   ['14:00', '17:00'],
     afternoon: ['fishing', 'hotel'],
-    wellness:  ['back', 'upper', 'lower', 'skip'],
   };
 
   // 입력된 LDAP은 'grace.j'처럼 도메인 접미가 붙을 수 있어 앞부분만 비교

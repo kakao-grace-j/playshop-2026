@@ -10,9 +10,6 @@
         "afternoon": {
           ".validate": "newData.isString() && (newData.val() === 'fishing' || newData.val() === 'hotel')"
         },
-        "wellness": {
-          ".validate": "newData.isString() && (newData.val() === 'back' || newData.val() === 'upper' || newData.val() === 'lower' || newData.val() === 'skip')"
-        },
         "updatedAt": {
           ".validate": "newData.isNumber()"
         },
